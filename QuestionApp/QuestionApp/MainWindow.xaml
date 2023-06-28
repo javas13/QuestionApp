@@ -1,0 +1,29 @@
+﻿<Window x:Class="QuestionApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:QuestionApp"
+        mc:Ignorable="d"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        WindowStartupLocation="CenterScreen"
+        Title="MainWindow" Height="320" Width="530" Loaded="Window_Loaded">
+
+    <Grid Height="286" Width="496">
+        <Grid.Effect>
+            <DropShadowEffect Color="Gray" BlurRadius="25" Direction="-25" RenderingBias="Quality"  ShadowDepth="4" Opacity="0.2" />
+        </Grid.Effect>
+        <Border CornerRadius="12"  Padding="25" Background="#E9EFF0" >
+            <Grid>
+                <TextBlock Text="Know your talent" Foreground="#22CC22" Style="{StaticResource CustomFont}"  FontSize="22"></TextBlock>
+                <TextBlock Text="Enter registration code" Foreground="Black" Style="{StaticResource CustomFont}" Margin="0,30,0,0"  FontSize="36"></TextBlock>
+                <TextBox Height="56" Width="432" FontSize="20" x:Name="registrTokenTxt" HorizontalAlignment="Left" Foreground="Black" Margin="0,0,0,0" Style="{StaticResource textbxstyle}"></TextBox>
+                <Button Style="{StaticResource buttonstyle1}" HorizontalAlignment="Left"   Height="56" Content="Continue" Foreground="White" FontSize="20" Width="118" Margin="0,150,0,0" Click="Button_Click"></Button>
+                <TextBlock Text="Code incorrect" x:Name="errorTxt" Visibility="Hidden" FontSize="20" Style="{StaticResource CustomFont}" Foreground="#C50000" Margin="288,182,-288,-182"></TextBlock>
+            </Grid>
+            
+        </Border>
+    </Grid>
+</Window>
