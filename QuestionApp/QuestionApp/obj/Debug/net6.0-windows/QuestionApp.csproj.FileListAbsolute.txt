@@ -23,3 +23,4 @@ C:\Users\andre\source\repos\QuestionApp\QuestionApp\obj\Debug\net6.0-windows\App
 C:\Users\andre\source\repos\QuestionApp\QuestionApp\obj\Debug\net6.0-windows\QuestionWindow.g.cs
 C:\Users\andre\source\repos\QuestionApp\QuestionApp\obj\Debug\net6.0-windows\QuestionWindow.baml
 C:\Users\andre\source\repos\QuestionApp\QuestionApp\obj\Debug\net6.0-windows\QuestionApp.csproj.ResolveComReference.cache
+C:\Users\andre\source\repos\QuestionApp\QuestionApp\obj\Debug\net6.0-windows\QuestionApp_Content.g.cs

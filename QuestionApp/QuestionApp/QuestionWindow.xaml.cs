@@ -83,7 +83,7 @@ namespace QuestionApp
             {
                 questLst.Visibility = Visibility.Collapsed;
                 questTxt.Text = "No questions for now. We'll let you know.";
-                await Task.Delay(2000);
+                await Task.Delay(3000);
                 this.Visibility = Visibility.Hidden;
             }
             else
@@ -131,9 +131,9 @@ namespace QuestionApp
             //var response = await client.SendAsync(request);
             //response.EnsureSuccessStatusCode();
             //string b = await response.Content.ReadAsStringAsync();
-            questTxt.Text = "Got it. Thank you!";
+            questTxt.Text = "Got it. Thanks! No more questions for today";
             questLst.Visibility = Visibility.Collapsed;
-            await Task.Delay(2000);
+            await Task.Delay(3000);
             this.Visibility = Visibility.Hidden;
             int b4 = 3;
                        
@@ -144,19 +144,25 @@ namespace QuestionApp
             var currentDate = DateTime.Now;
             if(currentDate.Hour == 10)
             {
-                if(Helper.tenHourDate.Day == currentDate.Day)
-                {
-                    Helper.tenHourDate = currentDate;
-                    await Task.Delay(10800000);
-                }
-                else
+                if(Helper.isFirstItrationOfQuestEveryDay = false)
                 {
                     Helper.tenHourDate = currentDate;
                     this.Focus();
                     this.Activate();
                     this.Visibility = Visibility.Visible;
                     questLst.Visibility = Visibility.Visible;
+                    Helper.isFirstItrationOfQuestEveryDay = true;
                     await GetQuest();
+                    await QuestEveryDay();
+                    //Helper.tenHourDate = currentDate;
+                    //await Task.Delay(82800000);
+                }
+                else
+                {
+                    //23 часа в миллисекндах, потом сделать не костыльно
+                    await Task.Delay(82800000);
+                    Helper.isFirstItrationOfQuestEveryDay = false;
+                    await QuestEveryDay();
                 }
                   
             }

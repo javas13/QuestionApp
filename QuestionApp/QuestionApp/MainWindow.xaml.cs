@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -26,14 +29,40 @@ namespace QuestionApp
         public MainWindow()
         {
             InitializeComponent();
+            System.Windows.Forms.NotifyIcon ni = new System.Windows.Forms.NotifyIcon();
+            ni.Icon = new System.Drawing.Icon("Kyt (1).ico");
+            ni.Text = "KYT";
+            ni.Visible = true;
+            var currentDir = Directory.GetCurrentDirectory();
+            if (File.Exists($"{currentDir}\\FirstLaunchWas.txt"))
+            {
+
+            }
+            else
+            {
+                try
+                {
+                    RegistryKey rk = Registry.CurrentUser.OpenSubKey
+                            ("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+                    rk.SetValue("Kyt", System.Environment.ProcessPath);
+                    File.Create($"{currentDir}\\FirstLaunchWas.txt");
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show(ex.Message + ex.ToString());
+                }
+                
+            }
+
             //Хранение pid в текстовом документе = идиотское решение, Переделать на хранение в настройках.
             //Также важно понимать что в данный момент при удалении программы, папка хранящая pid не удаляется, не удивляемся а ручками удаляем(для теста)
             //Опять таки нахуй снести такой подход
-            if (Directory.Exists("C:\\QuestData"))
+
+            if (Directory.Exists($"{currentDir}\\QuestData"))
             {
-                if (File.Exists("C:\\QuestData\\pid.txt"))
+                if (File.Exists($"{currentDir}\\QuestData\\pid.txt"))
                 {
-                    using (StreamReader reader = new StreamReader("C:\\QuestData\\pid.txt"))
+                    using (StreamReader reader = new StreamReader($"{currentDir}\\QuestData\\pid.txt"))
                     {
                         string text = reader.ReadToEnd();
                         if (text.Length < 5)
@@ -53,17 +82,15 @@ namespace QuestionApp
                 }
                 else
                 {
-                    File.Create("C:\\QuestData\\pid.txt");
-                }               
+                    File.Create($"{currentDir}\\QuestData\\pid.txt");
+                }
             }
             else
             {
-                Directory.CreateDirectory("C:\\QuestData");
-                File.Create("C:\\QuestData\\pid.txt");
+                Directory.CreateDirectory($"{currentDir}\\QuestData");
+                File.Create($"{currentDir}\\QuestData\\pid.txt");
             }
-            //Test();
             this.ShowInTaskbar = false;
-            //Registr();
         }
         public async Task Registr()
         {
@@ -113,7 +140,7 @@ namespace QuestionApp
             Rootobject1 confirmMes = JsonSerializer.Deserialize<Rootobject1>(b2);
             if(confirmMes.confirmed == true)
             {
-                using (StreamWriter writer = new StreamWriter("C:\\QuestData\\pid.txt", false))
+                using (StreamWriter writer = new StreamWriter($"{Directory.GetCurrentDirectory()}\\QuestData\\pid.txt", false))
                 {
                     await writer.WriteLineAsync(confirmMes.pid);
                 }

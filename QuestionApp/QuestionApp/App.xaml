@@ -64,19 +64,25 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                        <Border x:Name="brd" Background="{TemplateBinding Background}" BorderBrush="#CDD2D3" BorderThickness="0 1 0 0" CornerRadius="10">
-                            <ContentPresenter/>
+                        <Border x:Name="brd" Background="{TemplateBinding Background}" BorderBrush="#CDD2D3" BorderThickness="0 1 0 0" CornerRadius="0">
+                            <ContentPresenter x:Name="cntp" Margin="3"/>
                         </Border>
                         
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsSelected" Value="True">
-                                <Setter Property="Background" Value="#4CF12828">
+                                <Setter Property="CornerRadius" Value="10" TargetName="brd" />
+                                <Setter Property="Background" Value="White">
                                 </Setter>
-                                <Setter Property="BorderThickness" Value="5"/>
-                                <Setter Property="BorderBrush" Value="Green"/>
-                              
-                                
+                                <Setter TargetName="brd" Property="BorderThickness" Value="3"/>
+                                <Setter Property="BorderBrush" TargetName="brd" Value="#6AAF12"/>
+                                <Setter Property="Margin" TargetName="cntp" Value="0"></Setter>
                             </Trigger>
+                            <!--<Trigger Property="IsVisible" Value="True">
+                                <Setter Property="Background" Value="Transparent">
+                                </Setter>
+                                <Setter Property="BorderThickness" Value="0 1 0 0"/>
+                                <Setter Property="BorderBrush" Value="#CDD2D3"/>
+                            </Trigger>-->
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
