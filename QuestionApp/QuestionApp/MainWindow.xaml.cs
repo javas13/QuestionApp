@@ -28,46 +28,54 @@ namespace QuestionApp
     {
         public MainWindow()
         {
-            InitializeComponent();
+            InitializeComponent();           
             System.Windows.Forms.NotifyIcon ni = new System.Windows.Forms.NotifyIcon();
             ni.Icon = new System.Drawing.Icon("Kyt (1).ico");
             ni.Text = "KYT";
             ni.Visible = true;
             var currentDir = Directory.GetCurrentDirectory();
-            if (File.Exists($"{currentDir}\\FirstLaunchWas.txt"))
+            var isFirstLaunchWas = false;
+            using (StreamReader reader = new StreamReader($"{currentDir}\\IsFirstLaunchWas.txt"))
             {
-
-            }
-            else
-            {
-                try
+                string text = reader.ReadToEnd();
+                if (text.Contains("True") == false)
                 {
-                    RegistryKey rk = Registry.CurrentUser.OpenSubKey
-                            ("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-                    rk.SetValue("Kyt", System.Environment.ProcessPath);
-                    File.Create($"{currentDir}\\FirstLaunchWas.txt");
+                    try
+                    {
+                        RegistryKey rk = Registry.CurrentUser.OpenSubKey
+                                ("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+                        rk.SetValue("Kyt", System.Environment.ProcessPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message + ex.ToString());
+                    }
                 }
-                catch(Exception ex)
+                else
                 {
-                    MessageBox.Show(ex.Message + ex.ToString());
+                    isFirstLaunchWas = true;
                 }
                 
+            }
+            if(isFirstLaunchWas == false)
+            {
+                using (StreamWriter writer = new StreamWriter($"{Directory.GetCurrentDirectory()}\\IsFirstLaunchWas.txt", false))
+                {
+                    writer.Write("True");
+                }
             }
 
             //Хранение pid в текстовом документе = идиотское решение, Переделать на хранение в настройках.
             //Также важно понимать что в данный момент при удалении программы, папка хранящая pid не удаляется, не удивляемся а ручками удаляем(для теста)
             //Опять таки нахуй снести такой подход
 
-            if (Directory.Exists($"{currentDir}\\QuestData"))
-            {
-                if (File.Exists($"{currentDir}\\QuestData\\pid.txt"))
-                {
-                    using (StreamReader reader = new StreamReader($"{currentDir}\\QuestData\\pid.txt"))
+          
+                    using (StreamReader reader = new StreamReader($"{currentDir}\\pid.txt"))
                     {
                         string text = reader.ReadToEnd();
                         if (text.Length < 5)
                         {
-
+                          
                         }
                         else
                         {
@@ -78,18 +86,8 @@ namespace QuestionApp
                             this.Close();
                         }
 
-                    }
-                }
-                else
-                {
-                    File.Create($"{currentDir}\\QuestData\\pid.txt");
-                }
-            }
-            else
-            {
-                Directory.CreateDirectory($"{currentDir}\\QuestData");
-                File.Create($"{currentDir}\\QuestData\\pid.txt");
-            }
+                    }          
+                    
             this.ShowInTaskbar = false;
         }
         public async Task Registr()
@@ -129,10 +127,7 @@ namespace QuestionApp
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, "https://api.sit00.xyz/v0_1/confirmation");
             request.Headers.Add("x-api-key", "F3Ka1KrPGi5wgfnzVufgC2k9o17nVcgl8hpchQHZ");
-            //var content = new StringContent($"{{\n\"pid:\" \"{Helper.pid}\", \n \"token\": \"{Helper.registrToken}\"\n}}", Encoding.UTF8, "application/json");
-            var content = new StringContent($"{{\n  \"pid\": \"{Helper.pid}\",\n  \"token\": \"{Helper.registrToken}\"\n}}", Encoding.UTF8, "application/json");
-            //string content = ($"{{\n\"pid:\" \"{Helper.pid}\", \n \"token\": \"{Helper.registrToken}\"\n}}");
-            //var content = new StringContent("{\n  \"pid\": \"23a49875-759b-4a61-8f0e-1e63edb7fd4a\",\n  \"token\": \"Nsddu1cu-Uj\"\n}", Encoding.UTF8, "application/json");
+            var content = new StringContent($"{{\n  \"pid\": \"{Helper.pid}\",\n  \"token\": \"{Helper.registrToken}\"\n}}", Encoding.UTF8, "application/json");          
             request.Content = content;
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
@@ -140,7 +135,7 @@ namespace QuestionApp
             Rootobject1 confirmMes = JsonSerializer.Deserialize<Rootobject1>(b2);
             if(confirmMes.confirmed == true)
             {
-                using (StreamWriter writer = new StreamWriter($"{Directory.GetCurrentDirectory()}\\QuestData\\pid.txt", false))
+                using (StreamWriter writer = new StreamWriter($"{Directory.GetCurrentDirectory()}\\pid.txt", false))
                 {
                     await writer.WriteLineAsync(confirmMes.pid);
                 }
